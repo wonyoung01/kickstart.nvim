@@ -963,6 +963,18 @@ require('lazy').setup({
 
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
+      --  Mini.diff is a small and fast diff viewer.
+      --  Currently, disabling bar sign
+      require('mini.diff').setup {
+        -- view = {
+        --   style = 'sign',
+        --   signs = {
+        --     add = '▎',
+        --     change = '▎',
+        --     delete = '',
+        --   },
+        -- },
+      }
     end,
   },
   { -- Highlight, edit, and navigate code

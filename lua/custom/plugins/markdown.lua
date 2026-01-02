@@ -24,12 +24,13 @@ return {
       'nvim-treesitter/nvim-treesitter',
       'nvim-mini/mini.nvim',
     },
+    ft = { 'markdown' },
     opts = {},
     keys = {
       {
-        '<leader>tm',
+        '<leader>um',
         function()
-          vim.cmd 'RenderMarkdown toggle'
+          require('render-markdown').toggle()
         end,
         desc = 'Toggle Render Markdown',
       },

@@ -6,7 +6,9 @@ return {
     dependencies = { 'nvim-lua/plenary.nvim' },
     opts = {
       keywords = {
-        PERF = { alt = { 'DONE' } },
+        WARN = { alt = { 'CHECK' } },
+        NOTE = { alt = { 'HYPOTHESIS' } },
+        TEST = { alt = { 'RESULT' } },
       },
       highlight = {
         comments_only = false, -- <-- allow matches outside comments (needed for markdown)

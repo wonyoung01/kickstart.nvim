@@ -8,7 +8,7 @@ return {
       keywords = {
         WARN = { alt = { 'CHECK' } },
         NOTE = { alt = { 'HYPOTHESIS' } },
-        TEST = { alt = { 'RESULT' } },
+        TEST = { alt = { 'RESULT', 'GOINGON' } },
       },
       highlight = {
         comments_only = false, -- <-- allow matches outside comments (needed for markdown)

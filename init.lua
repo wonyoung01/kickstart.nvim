@@ -980,6 +980,9 @@ require('lazy').setup({
         --   },
         -- },
       }
+      -- Mini.icons provides a set of pretty icons for other mini modules
+      -- Currently, using it for rendering markdowns
+      require('mini.icons').setup()
     end,
   },
   { -- Highlight, edit, and navigate code

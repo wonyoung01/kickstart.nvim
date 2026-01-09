@@ -16,7 +16,8 @@ wo.foldcolumn = '1' -- show a fold column on the left
 
 -- Optional: some mappings for folding
 vim.keymap.set('n', 'zf', 'za', { desc = 'Toggle fold' })
-vim.keymap.set('n', 'zO', 'zR', { desc = 'Open all folds' })
-vim.keymap.set('n', 'zC', 'zM', { desc = 'Close all folds' })
+-- Open/close all folds (might be redundant with default mappings)
+-- vim.keymap.set('n', 'zO', 'zR', { desc = 'Open all folds' })
+-- vim.keymap.set('n', 'zC', 'zM', { desc = 'Close all folds' })
 
 return {}

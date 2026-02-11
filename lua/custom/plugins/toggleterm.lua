@@ -9,6 +9,7 @@ return {
   'akinsho/toggleterm.nvim',
   event = 'VeryLazy',
   opts = {
+    shell = '/bin/zsh', -- change to your preferred shell
     open_mapping = [[<c-\>]],
     direction = 'horizontal',
 

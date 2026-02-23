@@ -12,6 +12,7 @@ return {
     shell = '/bin/zsh', -- change to your preferred shell
     open_mapping = [[<c-\>]],
     direction = 'horizontal',
+    auto_scroll = false,
 
     -- valid toggleterm options
     shade_terminals = true,

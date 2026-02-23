@@ -6,13 +6,18 @@ return {
   version = '*',
   dependencies = {
     'nvim-lua/plenary.nvim',
-    'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
+    'nvim-tree/nvim-web-devicons',
     'MunifTanjim/nui.nvim',
   },
-  lazy = false,
+
+  -- ✅ lazy-load only when you call :Neotree (or hit the keymap below)
+  cmd = { 'Neotree' },
+
   keys = {
-    { '\\', ':Neotree reveal<CR>', desc = 'NeoTree reveal', silent = true },
+    -- (recommended: use <cmd>...<cr> instead of ":" form)
+    { '\\', '<cmd>Neotree reveal<cr>', desc = 'NeoTree reveal', silent = true },
   },
+
   opts = {
     filesystem = {
       window = {
@@ -22,13 +27,12 @@ return {
       },
     },
   },
+
   config = function()
     require('neo-tree').setup {
       window = {
         mappings = {
           ['Y'] = function(state)
-            -- NeoTree is based on [NuiTree](https://github.com/MunifTanjim/nui.nvim/tree/main/lua/nui/tree)
-            -- The node is based on [NuiNode](https://github.com/MunifTanjim/nui.nvim/tree/main/lua/nui/tree#nuitreenode)
             local node = state.tree:get_node()
             local filepath = node:get_id()
             local filename = node.name
@@ -43,7 +47,6 @@ return {
               modify(filename, ':e'),
             }
 
-            -- absolute path to clipboard
             local i = vim.fn.inputlist {
               'Choose to copy to clipboard:',
               '1. Absolute path: ' .. results[1],

@@ -2,6 +2,7 @@ return {
   -- Neo-tree related plugins
   {
     'antosha417/nvim-lsp-file-operations',
+    lazy = true,
     dependencies = {
       'nvim-lua/plenary.nvim',
       -- Uncomment whichever supported plugin(s) you use

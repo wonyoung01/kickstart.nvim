@@ -23,16 +23,18 @@ return {
     local detailed = false
 
     local function setup_oil()
-      oil.setup {
-        columns = detailed and {
+      if detailed then
+        oil.set_columns {
           'permissions',
           'mtime',
           'size',
           'icon',
-        } or {
-          'icon',
-        },
-      }
+        }
+        vim.notify 'Oil columns: detailed'
+      else
+        oil.set_columns { 'icon' }
+        vim.notify 'Oil columns: minimal'
+      end
     end
 
     -- Initial setup (default: icon only)
@@ -42,11 +44,6 @@ return {
     _G.OilToggleColumns = function()
       detailed = not detailed
       setup_oil()
-      vim.notify('Oil columns: ' .. (detailed and 'detailed' or 'minimal'))
-      -- Refresh buffer if open
-      if vim.bo.filetype == 'oil' then
-        vim.cmd.edit { bang = true }
-      end
     end
 
     oil.setup {

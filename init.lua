@@ -671,6 +671,39 @@ require('lazy').setup({
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+
+      -- Python specific setup in case of .venv or other virtual environments.
+      -- This is needed because pyright doesn't automatically detect virtual environments.
+      local util = require 'lspconfig.util'
+      local path = util.path
+      local function get_python_path(workspace)
+        -- vim.notify('get_python_path called with workspace:', workspace)
+
+        if vim.env.VIRTUAL_ENV then
+          -- vim.notify('Using activated venv:', vim.env.VIRTUAL_ENV)
+          return path.join(vim.env.VIRTUAL_ENV, 'bin', 'python')
+        end
+
+        for _, pattern in ipairs { '*', '.*' } do
+          local match = vim.fn.glob(path.join(workspace, pattern, 'pyvenv.cfg'))
+          if match ~= '' then
+            -- vim.notify('Found workspace venv:', match)
+            return path.join(path.dirname(match), 'bin', 'python')
+          end
+        end
+
+        -- vim.notify 'Using system python'
+        return vim.fn.exepath 'python3' or vim.fn.exepath 'python' or 'python'
+      end
+
+      vim.lsp.config('pyright', {
+        before_init = function(_, config)
+          -- vim.notify 'pyright before_init called'
+          config.settings = config.settings or {}
+          config.settings.python = config.settings.python or {}
+          config.settings.python.pythonPath = get_python_path(config.root_dir)
+        end,
+      })
       local servers = {
         -- clangd = {},
         -- gopls = {},

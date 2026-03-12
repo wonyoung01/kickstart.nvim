@@ -5,11 +5,13 @@ local map = function(mode, lhs, rhs, opts)
   vim.keymap.set(mode, lhs, rhs, opts)
 end
 
+local shell = fn.getenv 'SHELL' or '/bin/bash' -- default to bash if SHELL is not set
+
 return {
   'akinsho/toggleterm.nvim',
   event = 'VeryLazy',
   opts = {
-    shell = '/bin/zsh', -- change to your preferred shell
+    shell = shell,
     open_mapping = [[<c-\>]],
     direction = 'horizontal',
     auto_scroll = false,

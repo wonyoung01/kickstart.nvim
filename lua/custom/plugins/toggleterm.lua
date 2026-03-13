@@ -113,8 +113,16 @@ return {
       direction = 'float',
       on_open = float_handler,
     }
+
     local nvitop = Terminal:new {
       cmd = 'nvitop',
+      hidden = true,
+      direction = 'float',
+      on_open = float_handler,
+    }
+
+    local yazi = Terminal:new {
+      cmd = 'yazi',
       hidden = true,
       direction = 'float',
       on_open = float_handler,
@@ -144,6 +152,15 @@ return {
     map('n', '<leader>ld', function()
       lazydocker:toggle()
     end, { desc = 'toggleterm: toggle lazydocker' })
+    map('n', '<leader>ly', function()
+      yazi:toggle()
+    end, { desc = 'toggleterm: toggle yazi' })
+    map('n', '<leader>lt', function()
+      htop:toggle()
+    end, { desc = 'toggleterm: toggle htop' })
+    map('n', '<leader>ln', function()
+      nvitop:toggle()
+    end, { desc = 'toggleterm: toggle nvitop' })
 
     vim.api.nvim_create_user_command('Btop', function()
       btop:toggle()

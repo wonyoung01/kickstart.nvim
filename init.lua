@@ -807,7 +807,14 @@ require('lazy').setup({
             return
           end
 
-          local files = vim.fn.globpath(cwd, '**/*.' .. ext, false, true)
+          local files = vim.fn.systemlist {
+            'find',
+            cwd,
+            '-type',
+            'f',
+            '-name',
+            '*.' .. ext,
+          }
           if vim.tbl_isempty(files) then
             vim.notify('No *.' .. ext .. ' files found in ' .. cwd, vim.log.levels.INFO)
             return

@@ -787,6 +787,76 @@ require('lazy').setup({
         mode = '',
         desc = '[F]ormat buffer',
       },
+      {
+        '<leader>F',
+        function()
+          local conform = require 'conform'
+
+          local start_buf = vim.api.nvim_get_current_buf()
+          local start_file = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(start_buf), ':p')
+          local ext = vim.fn.fnamemodify(start_file, ':e')
+          local cwd = vim.fn.getcwd()
+
+          if start_file == '' then
+            vim.notify('Current buffer is not a file', vim.log.levels.WARN)
+            return
+          end
+
+          if ext == '' then
+            vim.notify('Current buffer has no extension', vim.log.levels.WARN)
+            return
+          end
+
+          local files = vim.fn.globpath(cwd, '**/*.' .. ext, false, true)
+          if vim.tbl_isempty(files) then
+            vim.notify('No *.' .. ext .. ' files found in ' .. cwd, vim.log.levels.INFO)
+            return
+          end
+
+          local original_win = vim.api.nvim_get_current_win()
+          local original_view = vim.fn.winsaveview()
+
+          local formatted = 0
+          local failed = 0
+
+          for _, file in ipairs(files) do
+            local abs = vim.fn.fnamemodify(file, ':p')
+
+            if vim.fn.filereadable(abs) == 1 then
+              local ok = pcall(function()
+                vim.cmd('silent keepalt edit ' .. vim.fn.fnameescape(abs))
+
+                conform.format {
+                  async = false,
+                  lsp_format = 'fallback',
+                  timeout_ms = 5000,
+                }
+
+                vim.cmd 'silent noautocmd write'
+              end)
+
+              if ok then
+                formatted = formatted + 1
+              else
+                failed = failed + 1
+              end
+            end
+          end
+
+          -- restore original buffer
+          if vim.api.nvim_buf_is_valid(start_buf) then
+            vim.api.nvim_set_current_win(original_win)
+            vim.cmd('silent keepalt buffer ' .. start_buf)
+            pcall(vim.fn.winrestview, original_view)
+          elseif start_file ~= '' and vim.fn.filereadable(start_file) == 1 then
+            vim.cmd('silent keepalt edit ' .. vim.fn.fnameescape(start_file))
+            pcall(vim.fn.winrestview, original_view)
+          end
+
+          vim.notify(string.format('Formatted %d *.%s file(s)%s', formatted, ext, failed > 0 and (', failed: ' .. failed) or ''), vim.log.levels.INFO)
+        end,
+        desc = '[F]ormat all files in cwd with current extension',
+      },
     },
     opts = {
       notify_on_error = false,
@@ -799,7 +869,7 @@ require('lazy').setup({
           return nil
         else
           return {
-            timeout_ms = 500,
+            timeout_ms = 5000,
             lsp_format = 'fallback',
           }
         end

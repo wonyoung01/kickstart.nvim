@@ -2,6 +2,7 @@ return {
   { 'github/copilot.vim' },
   {
     'folke/sidekick.nvim',
+    dependencies = { 'github/copilot.vim' },
     opts = {
       -- add any options here
       cli = {
@@ -95,7 +96,6 @@ return {
       },
     },
     init = function()
-      -- Optional: Set up any global configuration or autocommands here
       vim.lsp.enable 'copilot_ls'
     end,
   },

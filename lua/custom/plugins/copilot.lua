@@ -3,15 +3,6 @@ return {
   {
     'folke/sidekick.nvim',
     dependencies = { 'github/copilot.vim' },
-    opts = {
-      -- add any options here
-      cli = {
-        mux = {
-          backend = 'zellij',
-          enabled = true,
-        },
-      },
-    },
     keys = {
       {
         '<tab>',
@@ -97,6 +88,17 @@ return {
     },
     init = function()
       vim.lsp.enable 'copilot_ls'
+    end,
+    config = function()
+      require('sidekick').setup {}
+      -- Replace tools table entirely to avoid merging with defaults
+      require('sidekick.config').cli.tools = {
+        claude = { cmd = { 'claude' } },
+        codex = { cmd = { 'codex' } },
+        copilot = { cmd = { 'copilot', '--banner' } },
+        cursor = { cmd = { 'cursor-agent' } },
+        gemini = { cmd = { 'gemini' } },
+      }
     end,
   },
 }

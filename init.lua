@@ -674,26 +674,77 @@ require('lazy').setup({
 
       -- Python specific setup in case of .venv or other virtual environments.
       -- This is needed because pyright doesn't automatically detect virtual environments.
-      local util = require 'lspconfig.util'
-      local path = util.path
+      local path = require('lspconfig.util').path
+
+      local function is_executable(p)
+        return p and p ~= '' and vim.fn.executable(p) == 1
+      end
+
       local function get_python_path(workspace)
-        -- vim.notify('get_python_path called with workspace:', workspace)
-
+        -- Activated virtualenv
         if vim.env.VIRTUAL_ENV then
-          -- vim.notify('Using activated venv:', vim.env.VIRTUAL_ENV)
-          return path.join(vim.env.VIRTUAL_ENV, 'bin', 'python')
-        end
-
-        for _, pattern in ipairs { '*', '.*' } do
-          local match = vim.fn.glob(path.join(workspace, pattern, 'pyvenv.cfg'))
-          if match ~= '' then
-            -- vim.notify('Found workspace venv:', match)
-            return path.join(path.dirname(match), 'bin', 'python')
+          local python = path.join(vim.env.VIRTUAL_ENV, 'bin', 'python')
+          if is_executable(python) then
+            return python
           end
         end
 
-        -- vim.notify 'Using system python'
-        return vim.fn.exepath 'python3' or vim.fn.exepath 'python' or 'python'
+        -- Activated conda env
+        if vim.env.CONDA_PREFIX then
+          local python = path.join(vim.env.CONDA_PREFIX, 'bin', 'python')
+          if is_executable(python) then
+            return python
+          end
+        end
+
+        -- Workspace-local environments
+        if workspace and workspace ~= '' then
+          for _, dir in ipairs { '.venv', 'venv', 'env', '.env' } do
+            local python = path.join(workspace, dir, 'bin', 'python')
+            if is_executable(python) then
+              return python
+            end
+          end
+
+          -- Conda env inside workspace
+          for _, dir in ipairs { 'conda', '.conda' } do
+            local python = path.join(workspace, dir, 'bin', 'python')
+            if is_executable(python) then
+              return python
+            end
+          end
+
+          -- Fallback: search for pyvenv.cfg
+          local pyvenv = vim.fs.find('pyvenv.cfg', {
+            path = workspace,
+            upward = false,
+            limit = 1,
+          })[1]
+
+          if pyvenv then
+            local python = path.join(vim.fs.dirname(pyvenv), 'bin', 'python')
+            if is_executable(python) then
+              return python
+            end
+          end
+
+          -- Fallback: search for conda-meta directory
+          local conda_meta = vim.fs.find('conda-meta', {
+            path = workspace,
+            upward = false,
+            type = 'directory',
+            limit = 1,
+          })[1]
+
+          if conda_meta then
+            local python = path.join(vim.fs.dirname(conda_meta), 'bin', 'python')
+            if is_executable(python) then
+              return python
+            end
+          end
+        end
+
+        return vim.fn.exepath 'python3' ~= '' and vim.fn.exepath 'python3' or vim.fn.exepath 'python' ~= '' and vim.fn.exepath 'python' or 'python'
       end
 
       vim.lsp.config('pyright', {

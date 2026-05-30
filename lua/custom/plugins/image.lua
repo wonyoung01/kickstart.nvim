@@ -13,16 +13,9 @@ return {
   cond = not M.is_tmux() and M.is_kitty(),
   event = 'VeryLazy',
   dependencies = {
-    {
-      'nvim-treesitter/nvim-treesitter',
-      build = ':TSUpdate',
-      config = function()
-        require('nvim-treesitter.configs').setup {
-          ensure_installed = { 'markdown' },
-          highlight = { enable = true },
-        }
-      end,
-    },
+    -- Parser install + highlighting are configured in the main nvim-treesitter
+    -- spec (init.lua), which installs the `markdown` parser. Just depend on it.
+    'nvim-treesitter/nvim-treesitter',
   },
   opts = {
     backend = 'kitty',

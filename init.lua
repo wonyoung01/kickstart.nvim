@@ -1220,13 +1220,16 @@ require('lazy').setup({
         'c',
         'diff',
         'html',
+        'json',
         'lua',
         'luadoc',
         'markdown',
         'markdown_inline',
+        'python',
         'query',
         'vim',
         'vimdoc',
+        'yaml',
       }
       -- Install any that are missing (async; no-op if already present).
       local installed = ts.get_installed()

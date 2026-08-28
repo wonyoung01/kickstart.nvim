@@ -9,7 +9,15 @@ return {
     -- tag = 'v2.15', -- uncomment to pin to a specific release
     init = function()
       -- VimTeX configuration goes here, e.g.
-      vim.g.vimtex_view_method = 'zathura'
+      -- PDF viewer: Skim on macOS (zathura isn't packaged for it; see
+      -- dotfiles/scripts/pdf.sh), zathura elsewhere.
+      if vim.fn.has 'mac' == 1 then
+        vim.g.vimtex_view_method = 'skim'
+        vim.g.vimtex_view_skim_sync = 1 -- forward search after each compile
+        vim.g.vimtex_view_skim_activate = 1 -- bring Skim to the front on forward search
+      else
+        vim.g.vimtex_view_method = 'zathura'
+      end
       vim.g.vimtex_compiler_method = 'latexmk'
       -- Force latexmk to use XeLaTeX
       -- Do not use it but add
